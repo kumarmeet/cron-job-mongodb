@@ -1,0 +1,26 @@
+[
+  {
+    "_id": "63fefe9a78cdecf02df4c953",
+    "title": "Offer21",
+    "body": "This offer only for limited period of time. HURRY UP!",
+    "type": "offer",
+    "startDate": "2023-03-01T09:47:28.446Z",
+    "endDate": "2023-03-04T07:25:55.000Z",
+    "status": true,
+    "createdAt": "2023-03-01T07:28:26.384Z",
+    "updatedAt": "2023-03-01T07:28:26.384Z",
+    "__v": 0
+  },
+  {
+    "_id": "63fefed7b5133cf4baa6787e",
+    "title": "Offer check",
+    "body": "This offer only for limited period of time. HURRY UP!",
+    "type": "offer",
+    "startDate": "2023-03-01T07:49:57.784Z",
+    "endDate": "2023-03-01T07:25:55.000Z",
+    "status": true,
+    "createdAt": "2023-03-01T07:29:27.936Z",
+    "updatedAt": "2023-03-01T07:29:27.936Z",
+    "__v": 0
+  }
+]
