@@ -29,15 +29,21 @@ const CronJob = async () => {
         .lean()
         .then((res) => {
           return res.map((v) => {
-            return {
-              title: v.title,
-              body: v.body,
-              // startDate: moment(v.startDate).format("YYYY-MM-DD HH:mm:ss"),
-              // endDate: moment(v.endDate).format("YYYY-MM-DD HH:mm:ss"),
-              hour: moment(v.startDate).format("HH"),
-              minute: moment(v.startDate).format("mm"),
-              seconds: moment(v.startDate).format("ss"),
-            };
+            let diff = moment(moment()).diff(v.startDate, "days");
+
+            // console.log(diff % v.intervals == 0);
+
+            if (diff % v.intervals == 0) {
+              return {
+                title: v.title,
+                body: v.body,
+                type: v.type,
+                interval: v.intervals,
+                hour: moment(v.startDate).format("HH"),
+                minute: moment(v.startDate).format("mm"),
+                seconds: moment(v.startDate).format("ss"),
+              };
+            }
           });
         })
         .then((res) => {
