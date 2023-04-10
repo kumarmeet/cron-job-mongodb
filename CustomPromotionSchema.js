@@ -5,21 +5,22 @@ const customPromotionTemplates = mongoose.Schema(
     title: {
       type: String,
       trim: true,
-      unique: true,
-      default: "test title",
+      default: "",
     },
     body: {
       type: String,
       trim: true,
-      default: "test body",
+      default: "",
     },
     type: {
       type: String,
       trim: true,
-      default: "testtype",
+      default: "",
     },
-    // cronJob: cronJob,
-
+    intervals: {
+      type: Number,
+      default: 1,
+    },
     startDate: {
       type: Date,
       require: true,
@@ -30,7 +31,7 @@ const customPromotionTemplates = mongoose.Schema(
     },
     status: {
       type: Boolean,
-      default: false,
+      default: true,
     },
   },
   { timestamps: true }
