@@ -13,13 +13,26 @@ const CronJob = async () => {
   let job = cronJob.schedule(
     "* * * * * *",
     async () => {
+      moment.suppressDeprecationWarnings = true; // for removing warnings of moments
+      makeInactiveUser();
+      refillFreeMessageForUsers();
+      expireConcerge();
+      sendNotificationByLiked();
+      sendNotificationsBeforeTwoHourToUser();
+      expirePassportPackage();
+      sendNotificationToExpirePlan();
+      // updateFinshLimit();
+
       const registrationTokens = await userFcmSchema
         .find({}, { token: 1, _id: 0 })
         .lean()
         .then((res) => res.map((t) => t.token).filter((t) => t));
 
-      const data = await customPromotionTemplateSchema
+      // console.log(registrationTokens);
+
+      await customPromotionTemplateSchema
         .find({
+          //here filter date and time by present date and time
           $and: [
             { status: true },
             { startDate: { $lte: new Date() } },
@@ -28,48 +41,48 @@ const CronJob = async () => {
         })
         .lean()
         .then((res) => {
-          return res.map((v) => {
-            let diff = moment(moment()).diff(v.startDate, "days");
+          // console.log(res);
+          res &&
+            res.length &&
+            res.map(async (v) => {
+              let diff = moment(moment()).diff(v.startDate, "days");
 
-            // console.log(diff % v.intervals == 0);
+              // console.log(moment(v.startDate).format("YYYY-MM-DD HH:mm:ss"));
 
-            if (diff % v.intervals == 0) {
-              return {
-                title: v.title,
-                body: v.body,
-                type: v.type,
-                interval: v.intervals,
-                hour: moment(v.startDate).format("HH"),
-                minute: moment(v.startDate).format("mm"),
-                seconds: moment(v.startDate).format("ss"),
-              };
-            }
-          });
-        })
-        .then((res) => {
-          res.map(async (v) => {
-            // console.log(res);
-            const hour = moment().format("HH");
-            const minute = moment().format("mm");
-            const second = moment().format("ss");
-            // console.log(hour, v.hour, minute, v.minute, second, v.seconds);
-            // if (hour == "15" && minute == "30" && second == "14") {
-            if (hour == v.hour && minute == v.minute && second == v.seconds) {
-              console.log("Fire push notifications");
-              await notificationForCustomPromotion(
-                registrationTokens,
-                { title: v.title, body: v.body },
-                { data: "11" }
-              );
-            }
-          });
+              const hour = moment().format("HH");
+              const minute = moment().format("mm");
+              const second = moment().format("ss");
+
+              const h = moment(v.startDate).format("HH");
+              const m = moment(v.startDate).format("mm");
+              const s = moment(v.startDate).format("ss");
+
+              // console.log(diff, diff % v.intervals == 0, hour == h && minute == m && second == s);
+
+              // console.log(hour, h, minute, m, second, s);
+
+              if (
+                diff % v.intervals == 0 &&
+                hour == h &&
+                minute == m &&
+                second == s
+              ) {
+                console.log("Custom promotion sent");
+
+                await notificationForCustomPromotion(
+                  registrationTokens,
+                  { title: v.title, body: v.body },
+                  JSON.stringify({ type: v.type })
+                );
+              }
+            });
         });
 
       // console.log(moment().format("YYYY-MM-DD HH:mm:ss"));
     },
     {
       scheduled: false,
-      timezone: "Asia/Kolkata", // replace with Asia/Singapore
+      timezone: "Asia/Singapore",
     }
   );
 
